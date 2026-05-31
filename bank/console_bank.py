@@ -8,9 +8,9 @@ class Account:
         return f'{self.__account_no}\t{self.__owner}\t{self.__balance}'
     
     def deposit(self, amount):
-        self.__balance += amount
+        self.balance += amount
     def withdraw(self, amount):
-        self.__balance -= amount
+        self.balance -= amount
 
     def get_account_no(self):
         return self.__account_no
@@ -31,17 +31,11 @@ class AccountService:
     def list_account(self):
         return self.__account_list
     
-    def deposit(self, account_no, amount):  
-        for account in self.__account_list: 
+    def deposit(self, account_no, amount):
+        for account in account_list:
             if account.get_account_no() == account_no:
                 account.deposit(amount)
                 break
-    def withdraw(self, account_no, amount):
-        for account in self.__account_list:
-            if account.get_account_no() == account_no:
-                account.withdraw(amount)
-                return True
-        return False
 
 # 메뉴와 사용자 interaction에 따른 서비스 호출
 def select_menu():
@@ -51,11 +45,10 @@ def select_menu():
     menu = int(input('>> 메뉴 선택 : '))
     return menu
 
-
 aservice = AccountService()
 
 print()
-print('============== Hyejeong Bank ==============')
+print('============== Ethan Bank ==============')
 while True:
     menu = select_menu()
     if menu == 0: break
@@ -84,16 +77,6 @@ while True:
         account_no = input('> 계좌번호')
         amount = int(input('> 예금액 : '))
         aservice.deposit(account_no, amount)
-    else: #출금
-        print('------------')
-        print(' 출금 ')
-        print('------------')
-        account_no = input('> 계좌번호')
-        amount = int(input('> 출금액 : '))
 
-        if aservice.withdraw(account_no, amount):
-            print('결과: 출금이 성공되었습니다.')
-        else:
-            print('결과: 일치하는 계좌번호가 없습니다.')
 
 print('======== 이용해 주셔서 감사합니다. ========')
