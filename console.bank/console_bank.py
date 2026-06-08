@@ -29,7 +29,7 @@ class ConsoleBank:
 # 시작 메뉴 ==================================================================
 
     def show_welcome(self):
-        print('================ Jae ConsoleBank ================')
+        print('================ ConsoleBank ================')
 
     def say_goodbye(self):
         print('============ 이용해주셔서 감사합니다 ============')
