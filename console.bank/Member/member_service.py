@@ -1,7 +1,7 @@
 from Member.member_dao import MemberDAO
 from Member.member import Member
 
-#==================
+# ==================
 # 회원 관리 서비스 로직 (Controller) : MemberService
 class MemberService:
     ADMIN_ID = 'admin'
@@ -39,34 +39,20 @@ class MemberService:
         return self.__dao.update_member_info(id, member)
     
     def update_member_pw(self, id, org_pw, new_pw):
-        if self.current_user != id: return False
+        # [BUG FIX] current_user와 id가 일치해야 수정 가능
+        if self.current_user != id:
+            return False
         member = self.__dao.get_member_info(id)
-        if not member: return False
+        if not member:
+            return False
         if member.get_pw() == org_pw:
             member.set_pw(new_pw)
-            return True
+            # [BUG FIX] set_pw()만 하고 update_member_info() 호출이 없었음
+            # → DB에 반영이 안 되는 버그. update 호출 추가
+            return self.__dao.update_member_info(id, member)
         return False
     
     def remove_member(self, id):
-        print(self.current_user)
         if self.current_user == id or self.current_user == MemberService.ADMIN_ID:
             return self.__dao.remove_member(id)
         return False
-
-if __name__ == '__main__':
-    ms = MemberService(MemberDAO())
-    ms.join(Member('soonbeom', '1234', '권순범'))
-    ms.join(Member('soonsoon', '1111', '순순'))
-    members = ms.list_members()
-    for member in members:
-        print(member)
-    ms.login('curi', '1111')
-    print(ms.current_user)
-    ms.logout()
-    print(ms.current_user)
-    print(ms.view_member_info('Jae'))
-    ms.login(MemberService.ADMIN_ID, MemberService.ADMIN_PASSWORD)
-    print(ms.update_member_pw('WonJae', '1234', '4321'))
-    print(ms.view_member_info('WonJae'))
-    print(ms.remove_member('WonJae'))
-    print(ms.view_member_info('WonJae'))
