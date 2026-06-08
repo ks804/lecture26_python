@@ -1,4 +1,4 @@
-from account import Account
+from Account.account import Account # 경로 오류 수정
 
 class AccountDAO:
     def __init__(self):
@@ -53,11 +53,11 @@ if __name__ == '__main__':
     for account in dao.select_all_accounts():
         print(account)
     print(dao.select_account_by_account_no('111114'))
-    for account in dao.select_accounts_by_member_id('hyejeong'):
+    for account in dao.select_accounts_by_member_id('soonbeom'):
         print(account)
     print()
     print(dao.select_account_by_account_no('111112'))
-    dao.update_account('111112', Account('111112', 'curi', 300000, '1234'))
+    dao.update_account('111112', Account('111112', 'soonsoon', 300000, '1234'))
     print(dao.select_account_by_account_no('111112'))
     print()
     dao.delete_account('111113')
