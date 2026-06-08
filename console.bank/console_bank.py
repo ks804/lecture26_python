@@ -44,9 +44,6 @@ class ConsoleBank:
         print('==================================================')
         print()
 
-        # [BUG FIX] ValueError는 Exception의 하위 클래스이므로
-        # except Exception 뒤에 오면 절대 잡히지 않음
-        # → ValueError를 먼저 catch하도록 순서 변경
         try:
             menu = int(input('>>메뉴 선택 : '))
             print()
@@ -219,9 +216,6 @@ class ConsoleBank:
         else:
             print('ERROR : 아이디나 비밀번호가 일치하지 않습니다.')
 
-    # 회원탈퇴
-    # [BUG FIX] id만 받아서 탈퇴하면 누구든 타인 계정을 삭제할 수 있는 보안 취약점
-    # → 비밀번호를 추가로 입력받아 본인 확인 후 탈퇴 처리
     def menu_delete_membership(self):
         id = input('아이디: ')
         pw = input('비밀번호: ')
