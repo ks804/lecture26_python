@@ -6,12 +6,12 @@ from Account.account_dao import AccountDAO
 from Account.account_service import AccountService
 
 class ConsoleBank:
-    start_menu = ['종료','로그인','회원가입'] # 시작 메뉴
-    banking_menu = ['로그아웃','계좌목록','입금','출금','계좌생성','계좌해지','내정보'] # 회원 메뉴
-    member_myinfo_menu = ['돌아가기','내정보보기','비밀번호수정','회원탈퇴'] # 내 정보 메뉴
-    admin_menu = ['로그아웃','회원관리','계좌관리'] # 관리자 메뉴
-    admin_account_menu = ['돌아가기','전체계좌목록','회원별계좌목록'] # 계좌관리 메뉴
-    admin_member_menu = ['돌아가기','회원목록','회원정보조회','회원강퇴'] # 회원관리 메뉴
+    start_menu = ['종료', '로그인', '회원가입']
+    banking_menu = ['로그아웃', '계좌목록', '입금', '출금', '계좌생성', '계좌해지', '내정보']
+    member_myinfo_menu = ['돌아가기', '내정보보기', '비밀번호수정', '회원탈퇴']
+    admin_menu = ['로그아웃', '회원관리', '계좌관리']
+    admin_account_menu = ['돌아가기', '전체계좌목록', '회원별계좌목록']
+    admin_member_menu = ['돌아가기', '회원목록', '회원정보조회', '회원강퇴']
 
     def __init__(self):
         self.msv = MemberService(MemberDAO())
@@ -21,9 +21,10 @@ class ConsoleBank:
         self.show_welcome()
         while True:
             run_start_menu = self.run_start_menu()
-            if run_start_menu == 0:
+            if run_start_menu == False:
                 break
         self.say_goodbye()
+
 
 # 시작 메뉴 ==================================================================
 
@@ -35,7 +36,6 @@ class ConsoleBank:
         print()
 
     def select_menu(self, menu_list):
-        # 메뉴 리스트 보여주기
         print()
         print('====================== MENU ======================')
         for i in range(1, len(menu_list)):
@@ -44,22 +44,20 @@ class ConsoleBank:
         print('==================================================')
         print()
 
+        # [BUG FIX] ValueError는 Exception의 하위 클래스이므로
+        # except Exception 뒤에 오면 절대 잡히지 않음
+        # → ValueError를 먼저 catch하도록 순서 변경
         try:
             menu = int(input('>>메뉴 선택 : '))
             print()
-            if not (0 <= menu <= len(menu_list)-1):
-                raise Exception('ERROR : 잘못된 입력입니다')
+            if not (0 <= menu <= len(menu_list) - 1):
+                raise ValueError('ERROR : 잘못된 입력입니다')
             return menu
-        except Exception as e:
-            print(e)
-            return -1
         except ValueError:
-            print()
             print('ERROR : 잘못된 입력입니다')
             return -1
 
     def run_start_menu(self):
-        # 각 메뉴의 동작
         while True:
             menu = self.select_menu(ConsoleBank.start_menu)
             if menu == 0:
@@ -71,8 +69,8 @@ class ConsoleBank:
 
     # 로그인
     def menu_login(self):
-        id = input(f'아이디: ')
-        pw = input(f'비밀번호: ')
+        id = input('아이디: ')
+        pw = input('비밀번호: ')
         print()
         if self.msv.login(id, pw):
             if self.msv.current_user == MemberService.ADMIN_ID:
@@ -82,16 +80,16 @@ class ConsoleBank:
                 print('로그인되었습니다')
                 self.run_banking_menu()
         else:
-            print('ERROR : 아이디 또는 비밀번호가 잘못되었습니다')     
-    
+            print('ERROR : 아이디 또는 비밀번호가 잘못되었습니다')
+
     # 회원가입
     def menu_join(self):
-        id = input(f'생성할 아이디: ')
-        pw = input(f'사용할 비밀번호: ')
-        name = input(f'계좌주: ')
+        id = input('생성할 아이디: ')
+        pw = input('사용할 비밀번호: ')
+        name = input('계좌주: ')
         print()
         member = Member(id, pw, name)
-        if self.msv.join(member) == True:
+        if self.msv.join(member):
             print(f'{name}님 회원가입 되었습니다')
         else:
             print('ERROR : 이미 가입된 회원입니다')
@@ -100,7 +98,6 @@ class ConsoleBank:
 # 뱅킹 메뉴 ==================================================================
 
     def run_banking_menu(self):
-        # 각 메뉴의 동작
         while True:
             menu = self.select_menu(ConsoleBank.banking_menu)
             if menu == 0:
@@ -131,8 +128,8 @@ class ConsoleBank:
 
     # 입금
     def menu_deposit(self):
-        account_no = (input(f'입금 계좌번호: '))
-        amount = int(input(f'입금 금액: '))
+        account_no = input('입금 계좌번호: ')
+        amount = int(input('입금 금액: '))
         print()
         deposit_result = self.asv.deposit(account_no, amount)
         if deposit_result == True:
@@ -143,9 +140,9 @@ class ConsoleBank:
 
     # 출금
     def menu_withdraw(self):
-        account_no = (input(f'출금 계좌번호: '))
-        pw = input(f'비밀번호: ')
-        amount = int(input(f'출금 금액: '))
+        account_no = input('출금 계좌번호: ')
+        pw = input('비밀번호: ')
+        amount = int(input('출금 금액: '))
         print()
         try:
             withdraw_result = self.asv.withdraw(self.msv.current_user, account_no, amount, pw)
@@ -155,7 +152,7 @@ class ConsoleBank:
             else:
                 print('ERROR : 잘못된 계좌번호입니다')
         except KeyError:
-            print ('ERROR : 비밀번호가 일치하지 않습니다.')
+            print('ERROR : 비밀번호가 일치하지 않습니다.')
         except ValueError:
             print('ERROR : 계좌 잔액이 부족합니다.')
 
@@ -163,8 +160,7 @@ class ConsoleBank:
     def menu_create_account(self):
         pw = input('생성할 계좌 비밀번호 : ')
         print()
-        # 오류 해결 : 매개변수 이름을 'pw='가 아닌 'pw='로 수정
-        new_account = Account(account_no = 0, owner = self.msv.current_user, balance = 0, pw = pw)
+        new_account = Account(account_no=0, owner=self.msv.current_user, balance=0, password=pw)
         create_account = self.asv.create_account(new_account)
         if create_account == True:
             print(f'계좌가 생성되었습니다 [계좌번호: {new_account.get_account_no()}]')
@@ -173,9 +169,9 @@ class ConsoleBank:
 
     # 계좌해지
     def menu_delete_account(self):
-        id = input(f'아이디: ')
-        pw = input(f'비밀번호: ')
-        account_no = input(f'삭제할 계좌번호: ')
+        id = input('아이디: ')
+        pw = input('비밀번호: ')
+        account_no = input('삭제할 계좌번호: ')
         print()
         try:
             delete_account_result = self.asv.delete_account(id, account_no, pw)
@@ -184,7 +180,7 @@ class ConsoleBank:
             else:
                 print('ERROR : 잘못된 계좌번호입니다')
         except KeyError:
-            print ('ERROR : 아이디나 비밀번호가 일치하지 않습니다.')
+            print('ERROR : 아이디나 비밀번호가 일치하지 않습니다.')
 
     # 내 정보
     def menu_myinfo(self):
@@ -194,7 +190,6 @@ class ConsoleBank:
 # 내 정보 메뉴 ==================================================================
 
     def run_my_info_menu(self):
-        # 각 메뉴의 동작
         while True:
             menu = self.select_menu(ConsoleBank.member_myinfo_menu)
             if menu == 0:
@@ -214,9 +209,9 @@ class ConsoleBank:
 
     # 비밀번호 수정
     def menu_update_pw(self):
-        id = input(f'아이디: ')
-        org_pw = input(f'현재 비밀번호: ')
-        new_pw = input(f'새 비밀번호: ')
+        id = input('아이디: ')
+        org_pw = input('현재 비밀번호: ')
+        new_pw = input('새 비밀번호: ')
         print()
         member_pw = self.msv.update_member_pw(id, org_pw, new_pw)
         if member_pw == True:
@@ -225,11 +220,22 @@ class ConsoleBank:
             print('ERROR : 아이디나 비밀번호가 일치하지 않습니다.')
 
     # 회원탈퇴
+    # [BUG FIX] id만 받아서 탈퇴하면 누구든 타인 계정을 삭제할 수 있는 보안 취약점
+    # → 비밀번호를 추가로 입력받아 본인 확인 후 탈퇴 처리
     def menu_delete_membership(self):
-        id = input(f'아이디: ')
+        id = input('아이디: ')
+        pw = input('비밀번호: ')
         print()
+        member = self.msv.view_member_info(id)
+        if not member:
+            print('ERROR : 아이디가 일치하지 않습니다.')
+            return
+        if member.get_pw() != pw:
+            print('ERROR : 비밀번호가 일치하지 않습니다.')
+            return
         delete_member = self.msv.remove_member(id)
         if delete_member == True:
+            self.msv.logout()
             print('계정이 삭제되었습니다')
         else:
             print('ERROR : 아이디가 일치하지 않습니다.')
@@ -280,7 +286,7 @@ class ConsoleBank:
 
     # 회원별계좌목록
     def menu_list_member_accounts(self):
-        id = input(f'확인할 회원 아이디: ')
+        id = input('확인할 회원 아이디: ')
         print()
         check_member_accounts = self.asv.get_members_accounts(id)
         if check_member_accounts:
@@ -316,20 +322,21 @@ class ConsoleBank:
 
     # 회원정보조회
     def menu_view_member_info(self):
-        id = input(f'확인할 회원 아이디: ')
+        id = input('확인할 회원 아이디: ')
         print()
         check_member_info = self.msv.view_member_info(id)
         print(check_member_info)
 
     # 회원강퇴
     def menu_delete_member(self):
-        id = input(f'아이디: ')
+        id = input('아이디: ')
         print()
         delete_member = self.msv.remove_member(id)
         if delete_member == True:
             print('계정이 삭제되었습니다')
         else:
             print('ERROR : 아이디가 일치하지 않습니다.')
+
 
 if __name__ == '__main__':
     app = ConsoleBank()
