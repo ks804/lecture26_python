@@ -20,16 +20,12 @@ class ConsoleBank:
     def main(self):
         self.show_welcome()
         while True:
-            # 시작 메뉴
             run_start_menu = self.run_start_menu()
             if run_start_menu == 0:
                 break
         self.say_goodbye()
 
-
-
-
-# start_menu ==================================================================
+# 시작 메뉴 ==================================================================
 
     def show_welcome(self):
         print('================ Jae ConsoleBank ================')
@@ -47,23 +43,20 @@ class ConsoleBank:
         print(f'0. {menu_list[0]}')
         print('==================================================')
         print()
-        # 메뉴 입력 받기
+
         try:
             menu = int(input('>>메뉴 선택 : '))
             print()
-        # 예외처리 (없는 메뉴 선택 에러)
             if not (0 <= menu <= len(menu_list)-1):
                 raise Exception('ERROR : 잘못된 입력입니다')
             return menu
         except Exception as e:
             print(e)
             return -1
-        # 예외처리 (문자입력 에러)
         except ValueError:
             print()
             print('ERROR : 잘못된 입력입니다')
             return -1
-
 
     def run_start_menu(self):
         # 각 메뉴의 동작
@@ -75,7 +68,6 @@ class ConsoleBank:
                 self.menu_login()
             elif menu == 2:
                 self.menu_join()
-
 
     # 로그인
     def menu_login(self):
@@ -91,6 +83,7 @@ class ConsoleBank:
                 self.run_banking_menu()
         else:
             print('ERROR : 아이디 또는 비밀번호가 잘못되었습니다')     
+    
     # 회원가입
     def menu_join(self):
         id = input(f'생성할 아이디: ')
@@ -104,12 +97,7 @@ class ConsoleBank:
             print('ERROR : 이미 가입된 회원입니다')
 
 
-
-
-
-
-
-# banking_menu ==================================================================
+# 뱅킹 메뉴 ==================================================================
 
     def run_banking_menu(self):
         # 각 메뉴의 동작
@@ -175,6 +163,7 @@ class ConsoleBank:
     def menu_create_account(self):
         pw = input('생성할 계좌 비밀번호 : ')
         print()
+        # 오류 해결 : 매개변수 이름을 'pw='가 아닌 'pw='로 수정
         new_account = Account(account_no = 0, owner = self.msv.current_user, balance = 0, pw = pw)
         create_account = self.asv.create_account(new_account)
         if create_account == True:
@@ -202,12 +191,7 @@ class ConsoleBank:
         self.run_my_info_menu()
 
 
-
-
-
-
-
-# my_info_menu ==================================================================
+# 내 정보 메뉴 ==================================================================
 
     def run_my_info_menu(self):
         # 각 메뉴의 동작
@@ -251,7 +235,7 @@ class ConsoleBank:
             print('ERROR : 아이디가 일치하지 않습니다.')
 
 
-# admin_menu ==================================================================
+# 관리자 메뉴 ==================================================================
 
     def run_admin_menu(self):
         while True:
@@ -265,18 +249,14 @@ class ConsoleBank:
             elif menu == 2:
                 self.menu_manage_accounts()
 
-
     def menu_manage_members(self):
         self.run_admin_member_menu()
-
 
     def menu_manage_accounts(self):
         self.run_admin_account_menu()
 
 
-
-
-# admin_account_menu ==================================================================
+# 관리자 계좌 관리 메뉴 ==================================================================
 
     def run_admin_account_menu(self):
         while True:
@@ -310,7 +290,7 @@ class ConsoleBank:
             print('회원이 보유한 계좌가 없거나 존재하지 않는 회원입니다')
 
 
-# admin_member_menu ==================================================================
+# 관리자 회원 관리 메뉴 ==================================================================
 
     def run_admin_member_menu(self):
         while True:
@@ -350,7 +330,6 @@ class ConsoleBank:
             print('계정이 삭제되었습니다')
         else:
             print('ERROR : 아이디가 일치하지 않습니다.')
-
 
 if __name__ == '__main__':
     app = ConsoleBank()
