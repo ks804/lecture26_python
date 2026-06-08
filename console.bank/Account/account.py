@@ -14,6 +14,9 @@ class Account:
     def get_password(self):
         return self.__password
     
+    def set_account_no(self, account_no):
+        self.__account_no = account_no
+
     def set_balance(self, balance):
         self.__balance = balance
 
