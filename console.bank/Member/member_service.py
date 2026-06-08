@@ -1,8 +1,6 @@
 from Member.member_dao import MemberDAO
 from Member.member import Member
 
-# ==================
-# 회원 관리 서비스 로직 (Controller) : MemberService
 class MemberService:
     ADMIN_ID = 'admin'
     ADMIN_PASSWORD = '1234'
@@ -39,7 +37,6 @@ class MemberService:
         return self.__dao.update_member_info(id, member)
     
     def update_member_pw(self, id, org_pw, new_pw):
-        # [BUG FIX] current_user와 id가 일치해야 수정 가능
         if self.current_user != id:
             return False
         member = self.__dao.get_member_info(id)
@@ -47,8 +44,6 @@ class MemberService:
             return False
         if member.get_pw() == org_pw:
             member.set_pw(new_pw)
-            # [BUG FIX] set_pw()만 하고 update_member_info() 호출이 없었음
-            # → DB에 반영이 안 되는 버그. update 호출 추가
             return self.__dao.update_member_info(id, member)
         return False
     
