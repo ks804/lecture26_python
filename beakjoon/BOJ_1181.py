@@ -1,4 +1,3 @@
-# 1181번 (단어 정렬)
 def word_sort():
     word_list = []
     input_word_num = int(input(f'입력할 단어의 수 : '))
