@@ -1,4 +1,3 @@
-# 11650번 (좌표 정렬하기)
 def online_j():
     member_list = []
     total_input_member = int(input(f'총 인원수 : '))
