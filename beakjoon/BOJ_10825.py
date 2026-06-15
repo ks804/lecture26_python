@@ -1,4 +1,3 @@
-# 10825번 (국영수)
 def student_score():
     student_list = []
     input_student_num = int(input(f'입력할 학생의 수 : '))
@@ -10,6 +9,4 @@ def student_score():
 
     for s in student_list:
         print(s[0])
-        # print(이름)
-
 student_score()
